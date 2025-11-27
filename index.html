@@ -7,8 +7,8 @@
 
   <!-- SEO Meta Tags -->
   <title>Firebase 一键登录 - PWA应用</title>
-  <meta name="description" content="基于Firebase的渐进式Web应用,支持Google一键登录,安全便捷地管理您的账户信息。">
-  <meta name="keywords" content="Firebase, Google登录, PWA, 一键登录, 渐进式应用">
+  <meta name="description" content="基于Firebase的渐进式Web应用,支持多种登录方式,安全便捷地管理您的账户信息。">
+  <meta name="keywords" content="Firebase, Google登录, GitHub登录, Email登录, PWA, 一键登录, 渐进式应用">
   <meta name="author" content="Firebase Login App">
 
   <!-- PWA Meta Tags -->
@@ -39,6 +39,60 @@
     <!-- 头部 -->
     <header class="header">
       <div class="logo">
+        <span class="logo-icon">🔐</span>
+      </div>
+      <h1 class="title">Firebase 一键登录</h1>
+      <p class="subtitle">安全、快速、便捷的身份认证</p>
+    </header>
+
+    <!-- 登录界面 -->
+    <section id="login-section" class="card">
+      <h2 style="text-align: center; margin-bottom: 1.5rem; font-size: 1.5rem;">欢迎使用</h2>
+      <p style="text-align: center; color: var(--color-text-secondary); margin-bottom: 2rem;">
+        选择您喜欢的方式登录
+      </p>
+
+      <!-- 动态登录按钮容器 -->
+      <div id="login-buttons"></div>
+
+      <!-- 邮箱登录表单 -->
+      <div id="email-form-section" style="display: none;">
+        <div class="form-group">
+          <label for="email-input" class="form-label">邮箱地址</label>
+          <input type="email" id="email-input" class="form-input" placeholder="your@email.com" autocomplete="email">
+        </div>
+
+        <div class="form-group">
+          <label for="password-input" class="form-label">密码</label>
+          <input type="password" id="password-input" class="form-input" placeholder="至少 6 位字符"
+            autocomplete="current-password">
+        </div>
+
+        <div class="button-group">
+          <button id="email-login-btn" class="btn btn-primary" style="flex: 1;">
+            <span class="btn-icon">🔑</span>
+            登录
+          </button>
+          <button id="email-signup-btn" class="btn btn-secondary" style="flex: 1;">
+            <span class="btn-icon">📝</span>
+            注册
+          </button>
+        </div>
+
+        <button id="back-to-providers" class="btn btn-text" style="width: 100%; margin-top: 1rem;">
+          ← 返回其他登录方式
+        </button>
+      </div>
+
+      <p style="text-align: center; font-size: 0.875rem; color: var(--color-text-muted); margin-top: 1.5rem;">
+        点击登录即表示您同意我们的服务条款和隐私政策
+      </p>
+    </section>
+
+    <!-- 用户信息界面 -->
+    <section id="user-section" class="card hidden">
+      <div class="user-profile">
+        <!-- 用户头像 -->
         <div class="avatar-container">
           <img id="user-avatar" src="" alt="用户头像" class="avatar">
         </div>
@@ -86,7 +140,7 @@
           登出
         </button>
       </div>
-      </section>
+    </section>
   </div>
 
   <!-- JavaScript Modules -->

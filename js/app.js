@@ -1,10 +1,20 @@
 // 导入认证模块
-import { signInWithGoogle, signInWithGithub, signOutUser, onAuthStateChange, formatUserInfo } from './auth.js';
+import {
+    getEnabledProviders,
+    signInWithGoogle,
+    signInWithGithub,
+    signInWithEmail,
+    signUpWithEmail,
+    signOutUser,
+    onAuthStateChange,
+    formatUserInfo
+} from './auth.js';
 
 // DOM 元素引用
-let loginSection, userSection, googleLoginBtn, githubLoginBtn, logoutBtn;
+let loginSection, userSection, loginButtonsContainer, emailFormSection, logoutBtn;
 let userAvatar, userName, userEmail;
 let infoUid, infoEmail, infoEmailVerified, infoCreatedAt, infoLastSignIn, infoProvider;
+let emailInput, passwordInput, emailLoginBtn, emailSignupBtn, backToProvidersBtn;
 
 /**
  * 初始化应用
@@ -13,8 +23,8 @@ function initApp() {
     // 获取 DOM 元素
     loginSection = document.getElementById('login-section');
     userSection = document.getElementById('user-section');
-    googleLoginBtn = document.getElementById('google-login-btn');
-    githubLoginBtn = document.getElementById('github-login-btn');
+    loginButtonsContainer = document.getElementById('login-buttons');
+    emailFormSection = document.getElementById('email-form-section');
     logoutBtn = document.getElementById('logout-btn');
 
     userAvatar = document.getElementById('user-avatar');
@@ -28,9 +38,21 @@ function initApp() {
     infoLastSignIn = document.getElementById('info-last-signin');
     infoProvider = document.getElementById('info-provider');
 
-    // 绑定事件
-    googleLoginBtn.addEventListener('click', handleGoogleLogin);
-    githubLoginBtn.addEventListener('click', handleGithubLogin);
+    emailInput = document.getElementById('email-input');
+    passwordInput = document.getElementById('password-input');
+    emailLoginBtn = document.getElementById('email-login-btn');
+    emailSignupBtn = document.getElementById('email-signup-btn');
+    backToProvidersBtn = document.getElementById('back-to-providers');
+
+    // 动态生成登录按钮
+    renderLoginButtons();
+
+    // 绑定邮箱表单事件
+    if (emailLoginBtn) emailLoginBtn.addEventListener('click', handleEmailLogin);
+    if (emailSignupBtn) emailSignupBtn.addEventListener('click', handleEmailSignup);
+    if (backToProvidersBtn) backToProvidersBtn.addEventListener('click', showProviderButtons);
+
+    // 绑定登出事件
     logoutBtn.addEventListener('click', handleLogout);
 
     // 监听认证状态
@@ -47,42 +69,173 @@ function initApp() {
 }
 
 /**
- * 处理 Google 登录
+ * 动态渲染登录按钮
  */
-async function handleGoogleLogin() {
-    const originalText = googleLoginBtn.innerHTML;
+function renderLoginButtons() {
+    const providers = getEnabledProviders();
+    loginButtonsContainer.innerHTML = '';
+
+    providers.forEach((provider, index) => {
+        const button = document.createElement('button');
+        button.className = `btn btn-${provider.class}`;
+        button.style.width = '100%';
+        if (index < providers.length - 1) {
+            button.style.marginBottom = '1rem';
+        }
+
+        button.innerHTML = `
+      <span class="btn-icon">${provider.icon}</span>
+      使用 ${provider.name} 登录
+    `;
+
+        // 绑定点击事件
+        button.addEventListener('click', () => handleProviderLogin(provider));
+
+        loginButtonsContainer.appendChild(button);
+    });
+}
+
+/**
+ * 处理提供商登录
+ */
+async function handleProviderLogin(provider) {
+    const button = event.currentTarget;
+    const originalText = button.innerHTML;
 
     try {
-        googleLoginBtn.disabled = true;
-        googleLoginBtn.innerHTML = '<span class="loading"></span> 登录中...';
+        button.disabled = true;
+        button.innerHTML = '<span class="loading"></span> 登录中...';
 
-        await signInWithGoogle();
+        if (provider.type === 'email') {
+            // 显示邮箱登录表单
+            showEmailForm();
+            button.disabled = false;
+            button.innerHTML = originalText;
+        } else if (provider.id === 'google.com') {
+            await signInWithGoogle();
+        } else if (provider.id === 'github.com') {
+            await signInWithGithub();
+        }
     } catch (error) {
         console.error('登录错误:', error);
-        alert('登录失败: ' + error.message);
+        let errorMessage = '登录失败: ' + error.message;
 
-        googleLoginBtn.disabled = false;
-        googleLoginBtn.innerHTML = originalText;
+        // 友好的错误提示
+        if (error.code === 'auth/popup-closed-by-user') {
+            errorMessage = '登录已取消';
+        } else if (error.code === 'auth/operation-not-allowed') {
+            errorMessage = '该登录方式未启用,请在 Firebase Console 中启用';
+        }
+
+        alert(errorMessage);
+        button.disabled = false;
+        button.innerHTML = originalText;
     }
 }
 
 /**
- * 处理 GitHub 登录
+ * 显示邮箱登录表单
  */
-async function handleGithubLogin() {
-    const originalText = githubLoginBtn.innerHTML;
+function showEmailForm() {
+    loginButtonsContainer.style.display = 'none';
+    emailFormSection.style.display = 'block';
+    emailInput.focus();
+}
+
+/**
+ * 显示提供商按钮
+ */
+function showProviderButtons() {
+    emailFormSection.style.display = 'none';
+    loginButtonsContainer.style.display = 'block';
+    emailInput.value = '';
+    passwordInput.value = '';
+}
+
+/**
+ * 处理邮箱登录
+ */
+async function handleEmailLogin() {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    if (!email || !password) {
+        alert('请输入邮箱和密码');
+        return;
+    }
+
+    const originalText = emailLoginBtn.innerHTML;
 
     try {
-        githubLoginBtn.disabled = true;
-        githubLoginBtn.innerHTML = '<span class="loading"></span> 登录中...';
+        emailLoginBtn.disabled = true;
+        emailSignupBtn.disabled = true;
+        emailLoginBtn.innerHTML = '<span class="loading"></span> 登录中...';
 
-        await signInWithGithub();
+        await signInWithEmail(email, password);
     } catch (error) {
-        console.error('登录错误:', error);
-        alert('登录失败: ' + error.message);
+        console.error('邮箱登录错误:', error);
+        let errorMessage = '登录失败: ';
 
-        githubLoginBtn.disabled = false;
-        githubLoginBtn.innerHTML = originalText;
+        if (error.code === 'auth/user-not-found') {
+            errorMessage += '用户不存在,请先注册';
+        } else if (error.code === 'auth/wrong-password') {
+            errorMessage += '密码错误';
+        } else if (error.code === 'auth/invalid-email') {
+            errorMessage += '邮箱格式不正确';
+        } else {
+            errorMessage += error.message;
+        }
+
+        alert(errorMessage);
+        emailLoginBtn.disabled = false;
+        emailSignupBtn.disabled = false;
+        emailLoginBtn.innerHTML = originalText;
+    }
+}
+
+/**
+ * 处理邮箱注册
+ */
+async function handleEmailSignup() {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    if (!email || !password) {
+        alert('请输入邮箱和密码');
+        return;
+    }
+
+    if (password.length < 6) {
+        alert('密码长度至少为 6 位');
+        return;
+    }
+
+    const originalText = emailSignupBtn.innerHTML;
+
+    try {
+        emailLoginBtn.disabled = true;
+        emailSignupBtn.disabled = true;
+        emailSignupBtn.innerHTML = '<span class="loading"></span> 注册中...';
+
+        await signUpWithEmail(email, password);
+    } catch (error) {
+        console.error('注册错误:', error);
+        let errorMessage = '注册失败: ';
+
+        if (error.code === 'auth/email-already-in-use') {
+            errorMessage += '该邮箱已被注册,请直接登录';
+        } else if (error.code === 'auth/invalid-email') {
+            errorMessage += '邮箱格式不正确';
+        } else if (error.code === 'auth/weak-password') {
+            errorMessage += '密码强度太弱';
+        } else {
+            errorMessage += error.message;
+        }
+
+        alert(errorMessage);
+        emailLoginBtn.disabled = false;
+        emailSignupBtn.disabled = false;
+        emailSignupBtn.innerHTML = originalText;
     }
 }
 
@@ -112,13 +265,10 @@ async function handleLogout() {
 function showLoginScreen() {
     loginSection.classList.remove('hidden');
     userSection.classList.add('hidden');
+    showProviderButtons();
 
-    // 恢复登录按钮状态
-    googleLoginBtn.disabled = false;
-    googleLoginBtn.innerHTML = '<span class="btn-icon">🔐</span> 使用 Google 登录';
-
-    githubLoginBtn.disabled = false;
-    githubLoginBtn.innerHTML = '<span class="btn-icon">🐙</span> 使用 GitHub 登录';
+    // 重新渲染登录按钮(恢复状态)
+    renderLoginButtons();
 }
 
 /**
@@ -167,9 +317,10 @@ function formatDate(dateString) {
 function getProviderName(providerId) {
     const providers = {
         'google.com': 'Google',
+        'github.com': 'GitHub',
+        'password': 'Email/Password',
         'facebook.com': 'Facebook',
-        'twitter.com': 'Twitter',
-        'github.com': 'GitHub'
+        'twitter.com': 'Twitter'
     };
     return providers[providerId] || providerId;
 }
