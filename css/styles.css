@@ -230,6 +230,150 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-google {
+  background: var(--gradient-primary);
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-google:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg), 0 0 30px rgba(99, 102, 241, 0.4);
+}
+
+.btn-google:active {
+  transform: translateY(0);
+}
+
+.btn-github {
+  background: linear-gradient(135deg, #24292e 0%, #1a1e22 100%);
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-github:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg), 0 0 30px rgba(36, 41, 46, 0.4);
+}
+
+.btn-github:active {
+  transform: translateY(0);
+}
+
+.btn-email {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-email:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg), 0 0 30px rgba(5, 150, 105, 0.4);
+}
+
+.btn-email:active {
+  transform: translateY(0);
+}
+
+.btn-text {
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: none;
+  padding: 0.75rem 1rem;
+  font-size: 0.9375rem;
+}
+
+.btn-text:hover {
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.btn-icon {
+  font-size: 1.25rem;
+}
+
+/* ==================== 表单样式 ==================== */
+.form-group {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 1rem 1rem 1rem 3rem;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-normal);
+}
+
+.form-input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #6366f1;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1), 0 4px 12px rgba(99, 102, 241, 0.2);
+  transform: translateY(-2px);
+}
+
+.form-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* 输入框图标 */
+.form-group::before {
+  content: '';
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.25rem;
+  opacity: 0.6;
+  transition: opacity var(--transition-normal);
+  pointer-events: none;
+  margin-top: 0.875rem;
+}
+
+.form-group:has(#email-input)::before {
+  content: '📧';
+}
+
+.form-group:has(#password-input)::before {
+  content: '🔒';
+}
+
+.form-group:has(.form-input:focus)::before {
+  opacity: 1;
+}
+
+.button-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.button-group .btn {
+  flex: 1;
+}
+
+/* ==================== 用户信息展示 ==================== */
+.user-profile {
+  text-align: center;
 }
 
 .avatar-container {
