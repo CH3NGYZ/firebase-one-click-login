@@ -2,6 +2,10 @@
 
 一个基于 Firebase 的渐进式 Web 应用(PWA),实现 Google 一键登录功能,并展示用户的 Google 账户信息。
 
+[体验网站1](https://ch3ngyz.github.io/firebase-one-click-login)
+
+[体验网站2](https://firebase.ch3ng.top)
+
 ## ✨ 功能特性
 
 - 🔐 **Google 一键登录** - 使用 Firebase Authentication 实现安全的 Google OAuth 登录
