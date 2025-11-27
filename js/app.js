@@ -1,8 +1,8 @@
 // 导入认证模块
-import { signInWithGoogle, signOutUser, onAuthStateChange, formatUserInfo } from './auth.js';
+import { signInWithGoogle, signInWithGithub, signOutUser, onAuthStateChange, formatUserInfo } from './auth.js';
 
 // DOM 元素引用
-let loginSection, userSection, loginBtn, logoutBtn;
+let loginSection, userSection, googleLoginBtn, githubLoginBtn, logoutBtn;
 let userAvatar, userName, userEmail;
 let infoUid, infoEmail, infoEmailVerified, infoCreatedAt, infoLastSignIn, infoProvider;
 
@@ -13,7 +13,8 @@ function initApp() {
     // 获取 DOM 元素
     loginSection = document.getElementById('login-section');
     userSection = document.getElementById('user-section');
-    loginBtn = document.getElementById('login-btn');
+    googleLoginBtn = document.getElementById('google-login-btn');
+    githubLoginBtn = document.getElementById('github-login-btn');
     logoutBtn = document.getElementById('logout-btn');
 
     userAvatar = document.getElementById('user-avatar');
@@ -28,7 +29,8 @@ function initApp() {
     infoProvider = document.getElementById('info-provider');
 
     // 绑定事件
-    loginBtn.addEventListener('click', handleLogin);
+    googleLoginBtn.addEventListener('click', handleGoogleLogin);
+    githubLoginBtn.addEventListener('click', handleGithubLogin);
     logoutBtn.addEventListener('click', handleLogout);
 
     // 监听认证状态
@@ -45,25 +47,42 @@ function initApp() {
 }
 
 /**
- * 处理登录
+ * 处理 Google 登录
  */
-async function handleLogin() {
-    const originalText = loginBtn.innerHTML;
+async function handleGoogleLogin() {
+    const originalText = googleLoginBtn.innerHTML;
 
     try {
-        // 显示加载状态
-        loginBtn.disabled = true;
-        loginBtn.innerHTML = '<span class="loading"></span> 登录中...';
+        googleLoginBtn.disabled = true;
+        googleLoginBtn.innerHTML = '<span class="loading"></span> 登录中...';
 
         await signInWithGoogle();
-        // 登录成功后会触发 onAuthStateChange
     } catch (error) {
         console.error('登录错误:', error);
         alert('登录失败: ' + error.message);
 
-        // 恢复按钮状态
-        loginBtn.disabled = false;
-        loginBtn.innerHTML = originalText;
+        googleLoginBtn.disabled = false;
+        googleLoginBtn.innerHTML = originalText;
+    }
+}
+
+/**
+ * 处理 GitHub 登录
+ */
+async function handleGithubLogin() {
+    const originalText = githubLoginBtn.innerHTML;
+
+    try {
+        githubLoginBtn.disabled = true;
+        githubLoginBtn.innerHTML = '<span class="loading"></span> 登录中...';
+
+        await signInWithGithub();
+    } catch (error) {
+        console.error('登录错误:', error);
+        alert('登录失败: ' + error.message);
+
+        githubLoginBtn.disabled = false;
+        githubLoginBtn.innerHTML = originalText;
     }
 }
 
@@ -78,7 +97,6 @@ async function handleLogout() {
         logoutBtn.innerHTML = '<span class="loading"></span> 登出中...';
 
         await signOutUser();
-        // 登出成功后会触发 onAuthStateChange
     } catch (error) {
         console.error('登出错误:', error);
         alert('登出失败: ' + error.message);
@@ -96,8 +114,11 @@ function showLoginScreen() {
     userSection.classList.add('hidden');
 
     // 恢复登录按钮状态
-    loginBtn.disabled = false;
-    loginBtn.innerHTML = '<span class="btn-icon">🔐</span> 使用 Google 登录';
+    googleLoginBtn.disabled = false;
+    googleLoginBtn.innerHTML = '<span class="btn-icon">🔐</span> 使用 Google 登录';
+
+    githubLoginBtn.disabled = false;
+    githubLoginBtn.innerHTML = '<span class="btn-icon">🐙</span> 使用 GitHub 登录';
 }
 
 /**
@@ -106,17 +127,14 @@ function showLoginScreen() {
 function showUserProfile(user) {
     const userInfo = formatUserInfo(user);
 
-    // 隐藏登录界面,显示用户信息
     loginSection.classList.add('hidden');
     userSection.classList.remove('hidden');
 
-    // 更新用户信息
     userAvatar.src = userInfo.photoURL;
     userAvatar.alt = userInfo.displayName;
     userName.textContent = userInfo.displayName;
     userEmail.textContent = userInfo.email;
 
-    // 更新详细信息
     infoUid.textContent = userInfo.uid;
     infoEmail.textContent = userInfo.email;
     infoEmailVerified.textContent = userInfo.emailVerified;
@@ -124,7 +142,6 @@ function showUserProfile(user) {
     infoLastSignIn.textContent = formatDate(userInfo.lastSignIn);
     infoProvider.textContent = getProviderName(userInfo.providerId);
 
-    // 恢复登出按钮状态
     logoutBtn.disabled = false;
     logoutBtn.innerHTML = '<span class="btn-icon">🚪</span> 登出';
 }

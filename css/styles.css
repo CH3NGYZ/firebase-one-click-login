@@ -7,31 +7,31 @@
   --color-text-primary: #f1f5f9;
   --color-text-secondary: #cbd5e1;
   --color-text-muted: #94a3b8;
-  
+
   /* 渐变色 */
   --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
   --gradient-secondary: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
   --gradient-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
-  
+
   /* 间距 */
   --spacing-xs: 0.5rem;
   --spacing-sm: 1rem;
   --spacing-md: 1.5rem;
   --spacing-lg: 2rem;
   --spacing-xl: 3rem;
-  
+
   /* 圆角 */
   --radius-sm: 0.5rem;
   --radius-md: 1rem;
   --radius-lg: 1.5rem;
   --radius-full: 9999px;
-  
+
   /* 阴影 */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
   --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.3);
-  
+
   /* 动画 */
   --transition-fast: 0.2s ease;
   --transition-normal: 0.3s ease;
@@ -85,9 +85,19 @@ body {
 }
 
 @keyframes float {
-  0%, 100% { transform: translate(0, 0) rotate(0deg); }
-  33% { transform: translate(30px, -30px) rotate(120deg); }
-  66% { transform: translate(-20px, 20px) rotate(240deg); }
+
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  33% {
+    transform: translate(30px, -30px) rotate(120deg);
+  }
+
+  66% {
+    transform: translate(-20px, 20px) rotate(240deg);
+  }
 }
 
 /* ==================== 头部 ==================== */
@@ -115,8 +125,17 @@ body {
 }
 
 @keyframes pulse {
-  0%, 100% { transform: scale(1); box-shadow: var(--shadow-glow); }
-  50% { transform: scale(1.05); box-shadow: 0 0 60px rgba(99, 102, 241, 0.5); }
+
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: var(--shadow-glow);
+  }
+
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 60px rgba(99, 102, 241, 0.5);
+  }
 }
 
 .title {
@@ -216,6 +235,21 @@ body {
   border-color: rgba(255, 255, 255, 0.3);
 }
 
+.btn-github {
+  background: linear-gradient(135deg, #24292e 0%, #1a1e22 100%);
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-github:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg), 0 0 30px rgba(36, 41, 46, 0.4);
+}
+
+.btn-github:active {
+  transform: translateY(0);
+}
+
 .btn-icon {
   font-size: 1.25rem;
 }
@@ -244,8 +278,15 @@ body {
 }
 
 @keyframes avatarGlow {
-  0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
-  50% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.6); }
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 40px rgba(99, 102, 241, 0.6);
+  }
 }
 
 .user-name {
@@ -314,7 +355,9 @@ body {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ==================== 动画关键帧 ==================== */
@@ -323,6 +366,7 @@ body {
     opacity: 0;
     transform: translateY(-30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -334,6 +378,7 @@ body {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -345,33 +390,33 @@ body {
   html {
     font-size: 14px;
   }
-  
+
   .container {
     padding: var(--spacing-md);
   }
-  
+
   .title {
     font-size: 2rem;
   }
-  
+
   .subtitle {
     font-size: 1rem;
   }
-  
+
   .card {
     padding: var(--spacing-lg);
   }
-  
+
   .btn {
     padding: 0.875rem 1.5rem;
     font-size: 0.9375rem;
   }
-  
+
   .avatar-container {
     width: 100px;
     height: 100px;
   }
-  
+
   .user-name {
     font-size: 1.5rem;
   }
@@ -382,15 +427,15 @@ body {
     width: 60px;
     height: 60px;
   }
-  
+
   .logo-icon {
     font-size: 2rem;
   }
-  
+
   .title {
     font-size: 1.75rem;
   }
-  
+
   .card {
     padding: var(--spacing-md);
   }
@@ -398,6 +443,7 @@ body {
 
 /* ==================== 辅助功能 ==================== */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
